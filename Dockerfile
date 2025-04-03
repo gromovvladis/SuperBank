@@ -1,5 +1,5 @@
 # Базовый образ
-FROM python:3.12-slim
+FROM python:3.12
 
 # Установка зависимостей
 RUN apt-get update && apt-get install -y \

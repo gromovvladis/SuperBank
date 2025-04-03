@@ -22,8 +22,8 @@ logs/*
 .~lock.*
 *.DS_Store
 .python-version
+db/*
 db.sqlite
-*.env
 /public/static/*
 /public/media/*
 

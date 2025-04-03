@@ -26,3 +26,6 @@ db.sqlite
 *.env
 /public/static/*
 /public/media/*
+
+# Конечно, эта строчка должна быть раскоментирована. Но так быстрее
+# production.py

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment: 
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: ./superbank
+    restart: always
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py loaddata wallet.json &&
+             python manage.py loaddata transaction.json &&
+             python manage.py loaddata user.json &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+    env_file:
+      - .env
+    volumes:
+      - ./superbank:/apps
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy

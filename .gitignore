@@ -13,6 +13,7 @@ logs/*
 /lib/
 /share
 /pyvenv.cfg
+.vscode
 
 # Temporary/OS files
 *.swp

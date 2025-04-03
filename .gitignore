@@ -1,0 +1,27 @@
+# Packaging
+*.pyc
+__pycache__
+*.egg-info
+/dist/
+/build/
+/node_modules/
+
+# venv
+logs/*
+.venv
+/bin/
+/lib/
+/share
+/pyvenv.cfg
+
+# Temporary/OS files
+*.swp
+*.swo
+*.*~
+.~lock.*
+*.DS_Store
+.python-version
+db.sqlite
+*.env
+/public/static/*
+/public/media/*

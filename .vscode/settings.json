@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./superbank/superbank",
+        "./superbank/superbank"
+    ]
+}

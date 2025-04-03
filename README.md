@@ -5,10 +5,9 @@
 Для запуска: 
   Docker Compose команды:
   1. Запуск: docker-compose up --build
-  2. Запуск фоново: docker-compose up --build
-  3. Остановка: docker-compose down
-  4. Очистка всех volumes: docker-compose down -v
-  5. Запуск тестов: docker-compose exec web python manage.py test apps .
+  2. Остановка: docker-compose down
+  3. Очистка всех volumes: docker-compose down -v
+  4. Запуск тестов: docker-compose exec web python manage.py test apps .
 
 Реализовано два эндпоинта.
   1. Получения баланса кошелька.

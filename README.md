@@ -8,7 +8,6 @@
   3. Остановка: docker-compose down
   4. Очистка всех volumes: docker-compose down -v
   5. Запуск тестов: docker-compose exec web python manage.py test apps .
-  6. Создание суперпользователя: docker-compose exec web python manage.py createsuperuser
 
 Реализовано два эндпоинта.
   1. Получения баланса кошелька.

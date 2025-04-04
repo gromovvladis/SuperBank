@@ -3,7 +3,7 @@
 *Реализовано на Django + DRF.*
 
 Для запуска: 
-  Docker Compose команды:
+  Docker Compose:
   1. Запуск: docker-compose up --build
   2. Остановка: docker-compose down
   3. Очистка всех volumes: docker-compose down -v

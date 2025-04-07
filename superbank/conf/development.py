@@ -1,4 +1,3 @@
-import os
 from .settings import *
 
 # Quick-start development settings - unsuitable for production

@@ -4,8 +4,7 @@ from decimal import Decimal as D
 
 from django.test import TestCase, TransactionTestCase
 
-from apps.wallet.api.exceptions import (InvalidAmountException,
-                                        InvalidTypeException)
+from apps.wallet.api.exceptions import InvalidAmountException, InvalidTypeException
 from apps.wallet.models import Transaction, Wallet
 
 

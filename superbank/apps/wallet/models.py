@@ -1,4 +1,5 @@
 import logging
+import random
 import time
 import uuid
 from decimal import Decimal as D
@@ -8,8 +9,7 @@ from django.db.models import F
 from django.db.utils import DatabaseError, OperationalError
 from django.utils import timezone
 
-from apps.wallet.api.exceptions import (InvalidAmountException,
-                                        InvalidTypeException)
+from apps.wallet.api.exceptions import InvalidAmountException, InvalidTypeException
 
 logger = logging.getLogger("apps.wallet")
 
@@ -87,23 +87,49 @@ class Wallet(models.Model):
 
     withdraw.alters_data = True
 
-    def _create_transaction(self, amount, txn_type, retries=5):
-        """Создание записи о транзакции."""
+    def _create_transaction(self, amount, txn_type, retries=10):
+        """
+        Создание записи о транзакции.
+
+        Возможно будет более правильным создавать транзакцию при получении POST запроса из
+        объекта транизации, а не из объекта кошелька,
+        и уже при создании транзакции получать кошелек при помощи select_for_update и тем
+        самым блокировать его для других транзакций.
+
+        Но это уже зависит от контекста.
+
+        1. Вализируем сумму транзакции.
+        2. Блокируем данный кошелек для других транзакций.
+        3. Создаем транзакцию.
+        4. Изменяем баланс кошелька.
+        5. Сохраняем изменения.
+        6. В случае Race Condition выполняем попытки еще 10 раз с разным интервалом.
+        7. Откатываем изменения в случае ошибки.
+        8. Обновляем объект их базы данных для получения обновленных данных.
+
+        """
         self._validate_amount(amount, txn_type)
 
         for attempt in range(retries):
             try:
                 with transaction.atomic():
-                    self.transactions.create(amount=amount, operation_type=txn_type)
-                    self._change_balance(amount, txn_type)
+                    wallet = self.__class__.objects.select_for_update().get(pk=self.pk)
+                    wallet.transactions.create(amount=amount, operation_type=txn_type)
+                    wallet._change_balance(amount, txn_type)
                     break
             except (OperationalError, DatabaseError) as e:
                 if attempt == retries - 1:
                     logger.error(
-                        f"Ошибка при создании транзакции у кошелька {self.pk}. Ошибка: {e}"
+                        f"Ошибка при создании транзакции у кошелька {self.pk}. Превышено количество попыток. Ошибка: {e}."
                     )
                     raise OperationalError("Ошибка при создании транзакции")
-                time.sleep(0.3)
+                sleep_time = min(0.1 * (2**attempt) + random.uniform(0, 0.5), 2.0)
+                time.sleep(sleep_time)
+            except Exception as e:
+                logger.error(
+                    f"Ошибка при создании транзакции у кошелька {self.pk}. Ошибка: {e}"
+                )
+                raise e
 
         self.refresh_from_db()
 

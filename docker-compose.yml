@@ -17,22 +17,22 @@ services:
       timeout: 3s
       retries: 5
   web:
-    build:
-      context: .
+    build: .
     container_name: superbank
     restart: always
     command: >
-      sh -c "python manage.py migrate &&
-             python manage.py loaddata wallet.json &&
-             python manage.py loaddata transaction.json &&
-             python manage.py loaddata user.json &&
-             python manage.py runserver 0.0.0.0:8000"
+      sh -c  "python manage.py migrate &&
+              python manage.py loaddata wallet.json &&
+              python manage.py loaddata transaction.json &&
+              python manage.py loaddata user.json &&
+              gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 1 --timeout 120 --access-logfile logs/debug.log conf.wsgi:application"
     environment:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
     volumes:
+      - ./logs:/logs
       - ./superbank:/superbank
     ports:
       - "8000:8000"

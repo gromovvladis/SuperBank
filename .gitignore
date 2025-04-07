@@ -27,6 +27,7 @@ db/*
 db.sqlite
 /public/static/*
 /public/media/*
+db.sqlite3
 
 # Конечно, эта строчка должна быть раскоментирована. Но так быстрее
 # production.py

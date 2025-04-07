@@ -25,6 +25,7 @@ services:
               python manage.py loaddata wallet.json &&
               python manage.py loaddata transaction.json &&
               python manage.py loaddata user.json &&
+              python manage.py test apps &&
               gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 1 --timeout 120 --access-logfile logs/debug.log conf.wsgi:application"
     environment:
       DB_NAME: ${DB_NAME}

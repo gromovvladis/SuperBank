@@ -7,7 +7,6 @@
   1. Запуск: docker-compose up --build
   2. Остановка: docker-compose down
   3. Очистка всех volumes: docker-compose down -v
-  4. Запуск тестов: docker-compose exec web python manage.py test apps .
 
 Реализовано два эндпоинта.
   1. Получения баланса кошелька.
